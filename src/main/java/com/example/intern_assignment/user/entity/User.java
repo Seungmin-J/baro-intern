@@ -1,26 +1,34 @@
 package com.example.intern_assignment.user.entity;
 
 import com.example.intern_assignment.user.enums.UserRole;
-import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
 @Getter
+@NoArgsConstructor
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true)
     private String username;
-
     private String password;
+    private String nickname;
+    private Set<UserRole> userRoles = new HashSet<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<UserRole> role = new HashSet<>();
+    @Builder
+    public User(Long id, String username, String password, String nickname, Set<UserRole> userRoles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.userRoles = userRoles != null ? userRoles : new HashSet<>();
+    }
+
+    public void addRole(UserRole userRole) {
+        this.userRoles.add(userRole);
+    }
 }
+
